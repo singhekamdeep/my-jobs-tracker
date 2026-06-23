@@ -1,0 +1,22 @@
+{
+  "name": "my-jobs-tracker",
+  "version": "1.0.0",
+  "description": "Job Application Tracker — save, organize, and track job applications with AI-powered extraction",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:extension\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:extension": "cd extension && npm run build -- --watch",
+    "build": "cd backend && npm run build && cd ../frontend && npm run build && cd ../extension && npm run build",
+    "db:push": "cd backend && npx prisma db push",
+    "db:generate": "cd backend && npx prisma generate"
+  },
+  "keywords": ["job-tracker", "applications", "ai", "gemini"],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

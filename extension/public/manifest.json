@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Job Tracker — Save Jobs with One Click",
+  "version": "1.0.0",
+  "description": "Save job listings with one click from any job board. AI-powered extraction.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Save Job Listing"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
