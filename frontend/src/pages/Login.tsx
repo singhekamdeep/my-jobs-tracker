@@ -181,16 +181,24 @@ export default function Login() {
             </div>
             
             {showExtensionInstructions && (
-              <div className="absolute top-full mt-2 w-72 bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl p-5 fade-in text-left">
-                <h3 className="text-sm font-bold text-[var(--text-primary)] mb-3">How to install:</h3>
-                <ol className="text-xs text-[var(--text-secondary)] space-y-2.5 list-decimal list-inside">
-                  <li>Extract the downloaded ZIP file.</li>
-                  <li>Go to <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">chrome://extensions</code> or <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">brave://extensions</code>.</li>
-                  <li>Toggle <strong>Developer mode</strong> ON (top right corner).</li>
-                  <li>Click <strong>Load unpacked</strong>.</li>
-                  <li>Select the extracted <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">dist</code> folder.</li>
-                </ol>
-              </div>
+              <>
+                {/* Invisible full-screen overlay to catch outside clicks */}
+                <div 
+                  className="fixed inset-0 z-10" 
+                  onClick={() => setShowExtensionInstructions(false)}
+                />
+                
+                <div className="absolute top-full mt-2 w-72 bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl p-5 fade-in text-left z-20">
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] mb-3">How to install:</h3>
+                  <ol className="text-xs text-[var(--text-secondary)] space-y-2.5 list-decimal list-inside">
+                    <li>Extract the downloaded ZIP file.</li>
+                    <li>Go to <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">chrome://extensions</code> or <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">brave://extensions</code>.</li>
+                    <li>Toggle <strong>Developer mode</strong> ON (top right corner).</li>
+                    <li>Click <strong>Load unpacked</strong>.</li>
+                    <li>Select the extracted <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">dist</code> folder.</li>
+                  </ol>
+                </div>
+              </>
             )}
           </div>
         </div>

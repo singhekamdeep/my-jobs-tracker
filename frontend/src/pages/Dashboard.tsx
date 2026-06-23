@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useApplicationStore } from '../store/useApplicationStore';
 import { ApplicationStatus, APPLICATION_STATUSES, STATUS_CONFIG, Application } from '../types';
 import DetailPanel from '../components/DetailPanel';
-import { Plus, GripVertical, AlertCircle, Loader2 } from 'lucide-react';
+import { Plus, GripVertical, AlertCircle, Loader2, Download, ChevronDown } from 'lucide-react';
 
 export default function Dashboard() {
   const { applications, fetchAll, loading, error, updateStatus, addApplication } = useApplicationStore();
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [showExtensionInstructions, setShowExtensionInstructions] = useState(false);
 
   useEffect(() => {
     fetchAll();
@@ -183,7 +184,68 @@ export default function Dashboard() {
             );
           })}
         </div>
-      </div>
+
+      {/* Footer Buttons */}
+      <div className="shrink-0 mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href="https://digitalheroesco.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] hover:border-indigo-500/30 transition-all shadow-sm"
+          >
+            Built for Digital Heroes
+          </a>
+          <a
+            href="mailto:ekamdeeps12@gmail.com"
+            className="flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] hover:border-emerald-500/30 transition-all shadow-sm"
+          >
+            Made By - Ekamdeep Singh
+          </a>
+        </div>
+
+        {/* Extension Download */}
+        <div className="relative flex flex-col items-center justify-center z-20">
+          <div className="flex items-center bg-[var(--surface-secondary)] border border-[var(--border)] rounded-full overflow-hidden shadow-sm hover:border-violet-500/30 transition-all">
+            <a
+              href="/job-tracker-extension.zip"
+              download="job-tracker-extension.zip"
+              className="flex items-center justify-center gap-2 px-6 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all border-r border-[var(--border)]"
+            >
+              <Download className="w-3.5 h-3.5" />
+              For extension, download this file
+            </a>
+            <button
+              type="button"
+              onClick={() => setShowExtensionInstructions(!showExtensionInstructions)}
+              className="px-3 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all focus:outline-none"
+            >
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showExtensionInstructions ? 'rotate-180' : ''}`} />
+            </button>
+          </div>
+          
+          {showExtensionInstructions && (
+            <>
+              {/* Invisible full-screen overlay to catch outside clicks */}
+              <div 
+                className="fixed inset-0 z-10" 
+                onClick={() => setShowExtensionInstructions(false)}
+              />
+              
+              <div className="absolute bottom-full mb-2 w-72 bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl p-5 fade-in text-left z-20">
+                <h3 className="text-sm font-bold text-[var(--text-primary)] mb-3">How to install:</h3>
+                <ol className="text-xs text-[var(--text-secondary)] space-y-2.5 list-decimal list-inside">
+                  <li>Extract the downloaded ZIP file.</li>
+                  <li>Go to <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">chrome://extensions</code> or <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">brave://extensions</code>.</li>
+                  <li>Toggle <strong>Developer mode</strong> ON (top right corner).</li>
+                  <li>Click <strong>Load unpacked</strong>.</li>
+                  <li>Select the extracted <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">dist</code> folder.</li>
+                </ol>
+              </div>
+            </>
+          )}
+        </div>
+      </div>      </div>
 
       {/* Quick Add Modal */}
       {showQuickAdd && (

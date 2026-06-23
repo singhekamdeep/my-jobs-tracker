@@ -207,6 +207,15 @@ body {
     background: var(--accent-muted) !important;
     border-color: var(--accent) !important;
   }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .custom-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 }
 
 /* ═══════════════════════════════════════════════════
