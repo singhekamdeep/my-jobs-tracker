@@ -16,12 +16,37 @@ A full-stack, modern job application tracking system with an integrated Chrome E
 - **Extension**: Chrome Manifest V3, React, Vite, Tailwind CSS.
 
 ## Project Structure
-The repository is split into three standalone applications:
+The repository is logically divided into three distinct modules:
+
 ```text
 my-jobs-tracker/
-├── backend/    # Node.js API server
-├── frontend/   # React web dashboard
-└── extension/  # Chrome MV3 extension
+├── backend/
+│   ├── prisma/            # Database schema and generated types
+│   ├── src/
+│   │   ├── controllers/   # Request handlers for applications and auth
+│   │   ├── middleware/    # Auth and Arcjet rate-limiting middleware
+│   │   ├── routes/        # Express router definitions
+│   │   ├── services/      # Business logic (e.g., Gemini AI, custom Cache)
+│   │   └── db/            # Prisma client and environment configuration
+│   └── package.json       # Backend dependencies (Express, Prisma, Arcjet)
+│
+├── frontend/
+│   ├── public/            # Static assets
+│   ├── src/
+│   │   ├── components/    # Reusable React components (Kanban, Modal, etc.)
+│   │   ├── pages/         # Route-level components (Login, Dashboard)
+│   │   ├── store/         # Zustand global state management
+│   │   ├── api/           # Axios interceptors and API configuration
+│   │   └── types/         # TypeScript interfaces
+│   └── index.css          # Tailwind design system and glassmorphism styling
+│
+└── extension/
+    ├── public/            # Chrome manifest.json and icons
+    ├── src/
+    │   ├── content/       # Content scripts to scrape job boards
+    │   ├── background/    # Service worker for background tasks
+    │   └── popup/         # React application for the extension popup UI
+    └── vite.config.ts     # Multi-entry build configuration
 ```
 
 ## Getting Started
@@ -69,5 +94,3 @@ Create a Neon project and get your connection string.
 4. Click the Chrome extension icon and sign in if prompted.
 5. Click **Save Job**! The extension will scrape the page, the backend will process the text using Gemini AI, and the job will instantly appear on your Kanban board.
 
----
-*Built by Antigravity 👨‍🍳*

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, Loader2, Target } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Loader2, Target, Download, ChevronDown } from 'lucide-react';
 import api from '../api/axios';
 
 export default function Login() {
@@ -9,6 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showExtensionInstructions, setShowExtensionInstructions] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -138,6 +139,60 @@ export default function Login() {
               )}
             </button>
           </form>
+        </div>
+
+        {/* Footer Buttons */}
+        <div className="mt-8 flex flex-col items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="https://digitalheroesco.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] hover:border-indigo-500/30 transition-all shadow-sm"
+            >
+              Built for Digital Heroes
+            </a>
+            <a
+              href="mailto:ekamdeeps12@gmail.com"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] hover:border-emerald-500/30 transition-all shadow-sm"
+            >
+              Made By - Ekamdeep Singh
+            </a>
+          </div>
+
+          {/* Extension Download */}
+          <div className="relative flex flex-col items-center justify-center z-20">
+            <div className="flex items-center bg-[var(--surface-secondary)] border border-[var(--border)] rounded-full overflow-hidden shadow-sm hover:border-violet-500/30 transition-all">
+              <a
+                href="/job-tracker-extension.zip"
+                download="job-tracker-extension.zip"
+                className="flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all border-r border-[var(--border)]"
+              >
+                <Download className="w-4 h-4" />
+                For extension, download this file
+              </a>
+              <button
+                type="button"
+                onClick={() => setShowExtensionInstructions(!showExtensionInstructions)}
+                className="px-3 py-2.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all focus:outline-none"
+              >
+                <ChevronDown className={`w-4 h-4 transition-transform ${showExtensionInstructions ? 'rotate-180' : ''}`} />
+              </button>
+            </div>
+            
+            {showExtensionInstructions && (
+              <div className="absolute top-full mt-2 w-72 bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl p-5 fade-in text-left">
+                <h3 className="text-sm font-bold text-[var(--text-primary)] mb-3">How to install:</h3>
+                <ol className="text-xs text-[var(--text-secondary)] space-y-2.5 list-decimal list-inside">
+                  <li>Extract the downloaded ZIP file.</li>
+                  <li>Go to <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">chrome://extensions</code> or <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">brave://extensions</code>.</li>
+                  <li>Toggle <strong>Developer mode</strong> ON (top right corner).</li>
+                  <li>Click <strong>Load unpacked</strong>.</li>
+                  <li>Select the extracted <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">dist</code> folder.</li>
+                </ol>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
