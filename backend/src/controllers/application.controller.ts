@@ -94,7 +94,7 @@ export const getApplications = async (req: Request, res: Response) => {
  */
 export const getApplicationById = async (req: Request, res: Response) => {
   const userId = req.userId!
-  const { id } = req.params
+  const id = req.params.id as string
 
   const application = await prisma.application.findFirst({
     where: { id, user_id: userId },
@@ -121,7 +121,7 @@ export const getApplicationById = async (req: Request, res: Response) => {
  */
 export const updateApplication = async (req: Request, res: Response) => {
   const userId = req.userId!
-  const { id } = req.params
+  const id = req.params.id as string
   const { status, notes, company_name, role } = req.body
 
   // Verify ownership
@@ -162,7 +162,7 @@ export const updateApplication = async (req: Request, res: Response) => {
  */
 export const deleteApplication = async (req: Request, res: Response) => {
   const userId = req.userId!
-  const { id } = req.params
+  const id = req.params.id as string
 
   // Verify ownership
   const existing = await prisma.application.findFirst({
@@ -195,7 +195,7 @@ export const deleteApplication = async (req: Request, res: Response) => {
  */
 export const reExtractMetadata = async (req: Request, res: Response) => {
   const userId = req.userId!
-  const { id } = req.params
+  const id = req.params.id as string
 
   const existing = await prisma.application.findFirst({
     where: { id, user_id: userId },
