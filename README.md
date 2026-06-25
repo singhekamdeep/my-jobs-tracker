@@ -2,10 +2,9 @@
 
 A full-stack, modern job application tracking system with an integrated Chrome Extension and AI-powered data extraction. Designed with absolutely stunning UI/UX, prioritizing glassmorphism, responsive designs, and a seamless developer experience.
 
-## 🚀 Live Demo & Links
-- **Live Frontend (Vercel)**: [https://my-jobs-tracker.vercel.app](https://my-jobs-tracker.vercel.app)
-- **Live Backend (Render)**: [https://my-jobs-tracker.onrender.com](https://my-jobs-tracker.onrender.com)
-- **Download Extension**: Available directly inside the web dashboard!
+## 🚀 Live Demo
+- **Live Web App**: [https://my-jobs-tracker.vercel.app](https://my-jobs-tracker.vercel.app)
+- **Chrome Extension**: You can download the fully packaged extension ZIP file directly from the live web app dashboard once you log in!
 
 ## ✨ Features
 - **Kanban Board**: Drag-and-drop dashboard to seamlessly move job applications across stages (Saved, Applied, Interview, Offer, Rejected, Ghosted).
