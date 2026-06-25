@@ -1,7 +1,7 @@
 import { prisma } from '../db/db.js'
 import { extractJobMetadata } from '../services/ai.service.js'
 import type { Request, Response } from 'express'
-import type { ApplicationStatus } from '../../generated/prisma/client.js'
+import type { ApplicationStatus } from '@prisma/client'
 
 /**
  * Create a new application.
