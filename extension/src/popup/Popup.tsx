@@ -81,7 +81,7 @@ function createApiClient(): AxiosInstance {
             {},
             { withCredentials: true }
           );
-          const { accessToken } = refreshRes.data;
+          const { accessToken } = refreshRes.data.data;
           await chrome.storage.local.set({ accessToken });
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return client(originalRequest);
@@ -220,7 +220,7 @@ export default function Popup() {
 
     try {
       const res = await axios.post(`${API_BASE}/api/auth/login`, { email, password }, { withCredentials: true });
-      const { accessToken, user } = res.data;
+      const { accessToken, ...user } = res.data.data;
       await chrome.storage.local.set({ accessToken, user });
       setView('main');
       loadRecentSaves();
@@ -300,7 +300,7 @@ export default function Popup() {
       };
 
       const res = await api.post('/api/applications', payload);
-      const appId = res.data.id || res.data._id || res.data.application?.id || res.data.application?._id;
+      const appId = res.data.data.id;
 
       // Poll for AI extraction results
       let extractedData: ParsedJob | null = null;
@@ -308,7 +308,7 @@ export default function Popup() {
         await new Promise((r) => setTimeout(r, 1500));
         try {
           const pollRes = await api.get(`/api/applications/${appId}`);
-          const app = pollRes.data.application || pollRes.data;
+          const app = pollRes.data.data;
           if (app.parsedMetadata && Object.keys(app.parsedMetadata).length > 0) {
             extractedData = app.parsedMetadata;
             break;
