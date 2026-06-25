@@ -50,7 +50,7 @@ type View = 'loading' | 'login' | 'main' | 'saving' | 'success' | 'error';
 
 // ── API Client ──────────────────────────────────────────────────────────────
 
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://my-jobs-tracker.onrender.com';
 
 function createApiClient(): AxiosInstance {
   const client = axios.create({
@@ -428,7 +428,7 @@ export default function Popup() {
         <p className="text-[11px] text-gray-600 text-center mt-4">
           Don't have an account?{' '}
           <button
-            onClick={() => chrome.tabs.create({ url: 'http://localhost:5173/register' })}
+            onClick={() => chrome.tabs.create({ url: 'https://my-jobs-tracker.vercel.app/register' })}
             className="text-violet-400 hover:text-violet-300 transition-colors"
           >
             Sign up
@@ -529,7 +529,7 @@ export default function Popup() {
 
         <div className="flex gap-2">
           <button
-            onClick={() => chrome.tabs.create({ url: 'http://localhost:5173/dashboard' })}
+            onClick={() => chrome.tabs.create({ url: 'https://my-jobs-tracker.vercel.app/dashboard' })}
             className="flex-1 bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium rounded-lg px-3 py-2.5 transition-all flex items-center justify-center gap-1.5"
           >
             <ExternalLink className="w-3.5 h-3.5" />

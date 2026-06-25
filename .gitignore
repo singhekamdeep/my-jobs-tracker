@@ -38,7 +38,6 @@ out/
 *.db
 *.sqlite
 data/
-db/
 
 .DS_Store
 .AppleDouble
