@@ -23,6 +23,9 @@ export default function Login() {
       
       if (response.data.data.accessToken) {
         localStorage.setItem('accessToken', response.data.data.accessToken);
+        if (response.data.data.refreshToken) {
+          localStorage.setItem('refreshToken', response.data.data.refreshToken);
+        }
         navigate('/dashboard');
       }
     } catch (err: any) {

@@ -76,17 +76,18 @@ function createApiClient(): AxiosInstance {
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
+          const stored = await chrome.storage.local.get(['refreshToken']);
           const refreshRes = await axios.post(
             `${API_BASE}/api/auth/refresh`,
-            {},
+            { refreshToken: stored.refreshToken },
             { withCredentials: true }
           );
-          const { accessToken } = refreshRes.data.data;
-          await chrome.storage.local.set({ accessToken });
+          const { accessToken, refreshToken } = refreshRes.data.data;
+          await chrome.storage.local.set({ accessToken, refreshToken });
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return client(originalRequest);
         } catch {
-          await chrome.storage.local.remove(['accessToken', 'user']);
+          await chrome.storage.local.remove(['accessToken', 'refreshToken', 'user']);
           return Promise.reject(error);
         }
       }
@@ -220,8 +221,8 @@ export default function Popup() {
 
     try {
       const res = await axios.post(`${API_BASE}/api/auth/login`, { email, password }, { withCredentials: true });
-      const { accessToken, ...user } = res.data.data;
-      await chrome.storage.local.set({ accessToken, user });
+      const { accessToken, refreshToken, ...user } = res.data.data;
+      await chrome.storage.local.set({ accessToken, refreshToken, user });
       setView('main');
       loadRecentSaves();
       scrapeCurrentPage();
@@ -242,7 +243,7 @@ export default function Popup() {
     } catch {
       // ignore
     }
-    await chrome.storage.local.remove(['accessToken', 'user']);
+    await chrome.storage.local.remove(['accessToken', 'refreshToken', 'user']);
     setView('login');
     setScrapedData(null);
     setEmail('');

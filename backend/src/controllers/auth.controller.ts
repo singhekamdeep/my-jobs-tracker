@@ -65,7 +65,7 @@ export const signup = async (req: Request, res: Response) => {
   })
 
   res.status(201).json({
-    data: { id: user.id, email: user.email, accessToken },
+    data: { id: user.id, email: user.email, accessToken, refreshToken },
     error: null,
     meta: null,
   })
@@ -118,7 +118,7 @@ export const login = async (req: Request, res: Response) => {
   })
 
   res.status(200).json({
-    data: { id: user.id, email: user.email, accessToken },
+    data: { id: user.id, email: user.email, accessToken, refreshToken },
     error: null,
     meta: null,
   })
@@ -156,7 +156,7 @@ export const logout = async (req: Request, res: Response) => {
 }
 
 export const refresh = async (req: Request, res: Response) => {
-  const refreshToken = req.cookies?.refreshToken
+  const refreshToken = req.body?.refreshToken || req.cookies?.refreshToken
 
   if (!refreshToken) {
     res.status(401).json({
@@ -207,7 +207,7 @@ export const refresh = async (req: Request, res: Response) => {
   })
 
   res.status(200).json({
-    data: { id: user.id, email: user.email, accessToken },
+    data: { id: user.id, email: user.email, accessToken, refreshToken: newRefresh },
     error: null,
     meta: null,
   })

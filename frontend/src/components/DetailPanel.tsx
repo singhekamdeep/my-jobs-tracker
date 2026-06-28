@@ -104,6 +104,17 @@ export default function DetailPanel({ application, onClose }: DetailPanelProps) 
 
   const meta = application.parsedMetadata;
 
+  let rawUrl = '';
+  if (application.rawScrappedData) {
+    try {
+      const parsed = JSON.parse(application.rawScrappedData);
+      rawUrl = parsed.url || '';
+    } catch {
+      // ignore
+    }
+  }
+  const finalUrl = meta?.applyUrl || rawUrl;
+
   return (
     <>
       {/* Overlay */}
@@ -137,12 +148,26 @@ export default function DetailPanel({ application, onClose }: DetailPanelProps) 
                 </p>
               </div>
             </div>
-            <button
-              onClick={handleClose}
-              className="p-2 rounded-lg text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all duration-150"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              {finalUrl && (
+                <a
+                  href={finalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--accent)] hover:bg-[var(--accent-muted)] transition-all duration-150 border border-[var(--accent-muted)]"
+                  title="Open Job Listing"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  View Job
+                </a>
+              )}
+              <button
+                onClick={handleClose}
+                className="p-2 rounded-lg text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all duration-150 ml-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
 
