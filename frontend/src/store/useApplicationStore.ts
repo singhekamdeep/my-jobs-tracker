@@ -30,6 +30,7 @@ interface ApplicationState {
   reExtract: (id: string) => Promise<void>;
   setFilter: (filter: Partial<ApplicationFilter>) => void;
   getFiltered: () => Application[];
+  clearStore: () => void;
 }
 
 export const useApplicationStore = create<ApplicationState>((set, get) => ({
@@ -156,5 +157,9 @@ export const useApplicationStore = create<ApplicationState>((set, get) => ({
         (app.role || '').toLowerCase().includes(searchLower);
       return matchesStatus && matchesSearch;
     });
+  },
+
+  clearStore: () => {
+    set({ applications: [], loading: false, error: null });
   },
 }));

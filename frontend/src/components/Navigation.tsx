@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { LayoutGrid, List, LogOut, Briefcase, ChevronDown, Mail } from 'lucide-react';
 import api from '../api/axios';
+import { useApplicationStore } from '../store/useApplicationStore';
 
 export default function Navigation() {
   const navigate = useNavigate();
   const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const clearStore = useApplicationStore((state) => state.clearStore);
 
   const handleSignOut = async () => {
     try {
@@ -13,6 +15,7 @@ export default function Navigation() {
     } catch {
       // Ignore logout errors
     } finally {
+      clearStore();
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
