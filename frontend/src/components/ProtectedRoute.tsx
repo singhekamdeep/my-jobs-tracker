@@ -12,7 +12,12 @@ export default function ProtectedRoute() {
       if (!token) {
         // Try refreshing
         try {
-          const { data } = await api.post('/api/auth/refresh');
+          const refreshToken = localStorage.getItem('refreshToken');
+          if (!refreshToken) {
+            setAuthState('unauthenticated');
+            return;
+          }
+          const { data } = await api.post('/api/auth/refresh', { refreshToken });
           const newToken = data.data?.accessToken;
           if (newToken) {
             localStorage.setItem('accessToken', newToken);

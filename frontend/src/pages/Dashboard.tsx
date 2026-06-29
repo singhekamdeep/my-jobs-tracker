@@ -1,22 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useApplicationStore } from '../store/useApplicationStore';
 import { ApplicationStatus, APPLICATION_STATUSES, STATUS_CONFIG, Application } from '../types';
 import DetailPanel from '../components/DetailPanel';
-import { Plus, GripVertical, AlertCircle, Loader2, Download, ChevronDown } from 'lucide-react';
+import { Plus, Search, Loader2, AlertCircle } from 'lucide-react';
 
 export default function Dashboard() {
   const { applications, fetchAll, loading, error, updateStatus, addApplication } = useApplicationStore();
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
-  const [showExtensionInstructions, setShowExtensionInstructions] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchAll();
   }, [fetchAll]);
 
-  // Group applications by status
+  // Group applications by status with Search
+  const filteredApps = useMemo(() => {
+    if (!searchQuery.trim()) return applications;
+    const lowerQuery = searchQuery.toLowerCase();
+    return applications.filter(app => 
+      (app.company_name?.toLowerCase().includes(lowerQuery)) || 
+      (app.role?.toLowerCase().includes(lowerQuery))
+    );
+  }, [applications, searchQuery]);
+
   const groupedApps = APPLICATION_STATUSES.reduce((acc, status) => {
-    acc[status] = applications.filter((app) => app.status === status);
+    acc[status] = filteredApps.filter((app) => app.status === status);
     return acc;
   }, {} as Record<ApplicationStatus, Application[]>);
 
@@ -54,35 +63,49 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6 h-[calc(100vh-64px)] overflow-hidden flex flex-col">
+    <div className="p-6 h-[calc(100vh-64px)] overflow-hidden flex flex-col bg-[#0b120f]">
       {/* Top Stats Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="glass px-4 py-2 rounded-xl border border-[var(--border)] shadow-sm">
-            <span className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider font-semibold mr-2">Total</span>
-            <span className="text-lg font-bold text-[var(--text-primary)]">{stats.total}</span>
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4 pt-4">
+        <div className="flex flex-wrap items-center gap-6 divide-x divide-[var(--border-secondary)]">
+          <div className="flex flex-col px-2">
+            <span className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-bold mb-1">Total</span>
+            <span className="font-headline text-3xl font-bold text-[var(--text-primary)]">{stats.total}</span>
           </div>
-          <div className="glass px-4 py-2 rounded-xl border border-indigo-500/20 shadow-sm bg-indigo-500/5">
-            <span className="text-xs text-indigo-400 uppercase tracking-wider font-semibold mr-2">Applied</span>
-            <span className="text-lg font-bold text-[var(--text-primary)]">{stats.applied}</span>
+          <div className="flex flex-col pl-6 pr-2">
+            <span className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-bold mb-1">Applied</span>
+            <span className="font-headline text-3xl font-bold text-[var(--accent)]">{stats.applied}</span>
           </div>
-          <div className="glass px-4 py-2 rounded-xl border border-amber-500/20 shadow-sm bg-amber-500/5">
-            <span className="text-xs text-amber-400 uppercase tracking-wider font-semibold mr-2">Interviews</span>
-            <span className="text-lg font-bold text-[var(--text-primary)]">{stats.interviews}</span>
+          <div className="flex flex-col pl-6 pr-2">
+            <span className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-bold mb-1">Interview</span>
+            <span className="font-headline text-3xl font-bold text-[var(--text-primary)]">{stats.interviews}</span>
           </div>
-          <div className="glass px-4 py-2 rounded-xl border border-emerald-500/20 shadow-sm bg-emerald-500/5">
-            <span className="text-xs text-emerald-400 uppercase tracking-wider font-semibold mr-2">Offers</span>
-            <span className="text-lg font-bold text-[var(--text-primary)]">{stats.offers}</span>
+          <div className="flex flex-col pl-6 pr-2">
+            <span className="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-bold mb-1">Offers</span>
+            <span className="font-headline text-3xl font-bold text-[var(--accent)]">{stats.offers}</span>
           </div>
         </div>
 
-        <button
-          onClick={() => setShowQuickAdd(true)}
-          className="btn-primary gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Quick Add
-        </button>
+        <div className="flex items-center gap-4 w-full lg:w-auto">
+          <div className="relative flex-1 lg:flex-none">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-[var(--text-secondary)]" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search roles, companies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full lg:w-64 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:border-[var(--accent)] transition-colors text-[var(--text-primary)]"
+            />
+          </div>
+          <button
+            onClick={() => setShowQuickAdd(true)}
+            className="btn-primary gap-2 rounded-xl py-2 px-5 whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4" />
+            Add New Job
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -94,35 +117,33 @@ export default function Dashboard() {
 
       {/* Kanban Board */}
       <div className="flex-1 overflow-x-auto pb-4 custom-scrollbar">
-        <div className="flex gap-4 h-full min-w-max">
+        <div className="flex h-full min-w-max divide-x divide-[var(--border-secondary)]">
           {APPLICATION_STATUSES.map((status) => {
             const config = STATUS_CONFIG[status];
             const columnApps = groupedApps[status];
+            const displayLabel = config.label;
 
             return (
               <div
                 key={status}
-                className="w-80 flex flex-col h-full rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm"
+                className="w-[320px] flex flex-col h-full px-4 shrink-0"
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, status)}
               >
                 {/* Column Header */}
-                <div className={`p-4 border-b border-[var(--border)] ${config.bgColor} rounded-t-2xl flex items-center justify-between`}>
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">{config.icon}</span>
-                    <h3 className={`font-semibold ${config.color}`}>{config.label}</h3>
-                  </div>
-                  <span className="text-xs font-medium bg-[var(--surface-secondary)] text-[var(--text-secondary)] px-2 py-1 rounded-full">
+                <div className="pb-4 flex items-center gap-3">
+                  <h3 className="font-medium text-[var(--text-primary)] text-sm">{displayLabel}</h3>
+                  <span className="text-[10px] font-bold bg-[var(--surface-tertiary)] text-[var(--text-secondary)] px-2 py-0.5 rounded">
                     {columnApps.length}
                   </span>
                 </div>
 
                 {/* Cards List */}
-                <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar rounded-xl bg-transparent">
                   {columnApps.length === 0 ? (
-                    <div className="h-full flex items-center justify-center text-center p-4">
-                      <p className="text-sm text-[var(--text-tertiary)] border border-dashed border-[var(--border-secondary)] rounded-xl w-full py-8">
-                        Drop applications here
+                    <div className="h-28 flex items-center justify-center text-center p-4 border border-dashed border-[var(--border)] rounded-2xl">
+                      <p className="text-sm text-[var(--text-tertiary)]">
+                        Drop here
                       </p>
                     </div>
                   ) : (
@@ -132,14 +153,10 @@ export default function Dashboard() {
                         draggable
                         onDragStart={(e) => handleDragStart(e, app.id)}
                         onClick={() => setSelectedApp(app)}
-                        className="group bg-[var(--surface-secondary)] hover:bg-[var(--surface-tertiary)] border border-[var(--border-secondary)] rounded-xl p-4 cursor-pointer transition-all hover:shadow-md"
+                        className="group bg-[var(--surface-elevated)] border border-[var(--border)] rounded-2xl p-4 cursor-pointer card-hover hover:border-[var(--accent-muted)] flex flex-col gap-3 relative"
                       >
-                        <div className="flex items-start gap-3">
-                          <div className="cursor-grab active:cursor-grabbing text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity pt-1 -ml-2 shrink-0">
-                            <GripVertical className="w-4 h-4" />
-                          </div>
-                          
-                          <div className="w-10 h-10 rounded-lg bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="w-10 h-10 rounded-xl bg-[var(--surface-tertiary)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 overflow-hidden text-[var(--accent)] font-headline font-bold text-base">
                             {app.company_name ? (
                               <img
                                 src={`https://logo.clearbit.com/${app.company_name.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`}
@@ -151,30 +168,44 @@ export default function Dashboard() {
                                 }}
                               />
                             ) : null}
-                            <span className={app.company_name ? "hidden font-bold text-[var(--text-secondary)] text-sm" : "font-bold text-[var(--text-secondary)] text-sm"}>
+                            <span className={app.company_name ? "hidden" : ""}>
                               {(app.company_name || 'U')[0].toUpperCase()}
                             </span>
                           </div>
-
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-sm text-[var(--text-primary)] truncate">
-                              {app.role || 'Unknown Role'}
-                            </h4>
-                            <p className="text-xs text-[var(--text-secondary)] truncate mt-0.5">
-                              {app.company_name || 'Unknown Company'}
-                            </p>
-                            
-                            <div className="mt-3 flex items-center justify-between">
-                              <span className="text-[10px] text-[var(--text-tertiary)]">
-                                {new Date(app.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                              </span>
-                              {app.parsedMetadata?.salary && app.parsedMetadata.salary !== 'Not mentioned' && (
-                                <span className="text-[10px] font-medium text-emerald-400 bg-emerald-400/10 px-1.5 py-0.5 rounded">
-                                  {app.parsedMetadata.salary.length > 15 ? app.parsedMetadata.salary.substring(0, 15) + '...' : app.parsedMetadata.salary}
-                                </span>
-                              )}
-                            </div>
-                          </div>
+                          
+                          <span className="text-[10px] text-[var(--text-tertiary)] font-medium mt-1">
+                            {(() => {
+                               const diff = Date.now() - new Date(app.created_at).getTime();
+                               const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                               return days === 0 ? 'Today' : `${days}d ago`;
+                            })()}
+                          </span>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-semibold text-sm text-[var(--text-primary)] mb-0.5 leading-tight pr-4">
+                            {app.role || 'Unknown Role'}
+                          </h4>
+                          <p className="text-xs text-[var(--text-secondary)]">
+                            {app.company_name || 'Unknown Company'}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-3 pt-1 mt-auto">
+                          {app.parsedMetadata?.jobType ? (
+                            <span className="text-[9px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">
+                              {app.parsedMetadata.jobType}
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">
+                              FULL-TIME
+                            </span>
+                          )}
+                          {app.parsedMetadata?.salary && app.parsedMetadata.salary !== 'Not mentioned' && (
+                            <span className="text-[11px] font-bold text-[var(--text-secondary)] ml-auto">
+                              {app.parsedMetadata.salary}
+                            </span>
+                          )}
                         </div>
                       </div>
                     ))
@@ -185,67 +216,7 @@ export default function Dashboard() {
           })}
         </div>
 
-      {/* Footer Buttons */}
-      <div className="shrink-0 mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="https://digitalheroesco.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] hover:border-indigo-500/30 transition-all shadow-sm"
-          >
-            Built for Digital Heroes
-          </a>
-          <a
-            href="mailto:ekamdeeps12@gmail.com"
-            className="flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] hover:border-emerald-500/30 transition-all shadow-sm"
-          >
-            Made By - Ekamdeep Singh
-          </a>
-        </div>
-
-        {/* Extension Download */}
-        <div className="relative flex flex-col items-center justify-center z-20">
-          <div className="flex items-center bg-[var(--surface-secondary)] border border-[var(--border)] rounded-full overflow-hidden shadow-sm hover:border-violet-500/30 transition-all">
-            <a
-              href="/job-tracker-extension.zip"
-              download="job-tracker-extension.zip"
-              className="flex items-center justify-center gap-2 px-6 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all border-r border-[var(--border)]"
-            >
-              <Download className="w-3.5 h-3.5" />
-              For extension, download this file
-            </a>
-            <button
-              type="button"
-              onClick={() => setShowExtensionInstructions(!showExtensionInstructions)}
-              className="px-3 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all focus:outline-none"
-            >
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showExtensionInstructions ? 'rotate-180' : ''}`} />
-            </button>
-          </div>
-          
-          {showExtensionInstructions && (
-            <>
-              {/* Invisible full-screen overlay to catch outside clicks */}
-              <div 
-                className="fixed inset-0 z-10" 
-                onClick={() => setShowExtensionInstructions(false)}
-              />
-              
-              <div className="absolute bottom-full mb-2 w-72 bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl p-5 fade-in text-left z-20">
-                <h3 className="text-sm font-bold text-[var(--text-primary)] mb-3">How to install:</h3>
-                <ol className="text-xs text-[var(--text-secondary)] space-y-2.5 list-decimal list-inside">
-                  <li>Extract the downloaded ZIP file.</li>
-                  <li>Go to <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">chrome://extensions</code> or <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">brave://extensions</code>.</li>
-                  <li>Toggle <strong>Developer mode</strong> ON (top right corner).</li>
-                  <li>Click <strong>Load unpacked</strong>.</li>
-                  <li>Select the extracted <code className="bg-[var(--surface-secondary)] px-1 rounded text-violet-400">dist</code> folder.</li>
-                </ol>
-              </div>
-            </>
-          )}
-        </div>
-      </div>      </div>
+      </div>
 
       {/* Quick Add Modal */}
       {showQuickAdd && (

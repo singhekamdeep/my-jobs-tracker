@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Loader2, Target, Download, ChevronDown } from 'lucide-react';
 import api from '../api/axios';
 
@@ -11,6 +11,11 @@ export default function Login() {
   const [error, setError] = useState('');
   const [showExtensionInstructions, setShowExtensionInstructions] = useState(false);
   const navigate = useNavigate();
+
+  const isAuthenticated = !!localStorage.getItem('accessToken') || !!localStorage.getItem('refreshToken');
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,14 +41,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--background)] p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--surface-secondary)] p-4 sm:p-6 lg:p-8">
       {/* Background gradients */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--accent)]/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-[var(--accent)]/5 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-10 relative">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 text-white mb-6 shadow-xl shadow-indigo-500/20">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[var(--surface-elevated)] border border-[var(--border)] text-[var(--accent)] mb-6 shadow-xl shadow-[var(--accent)]/10">
             <Target className="w-8 h-8" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] mb-3">

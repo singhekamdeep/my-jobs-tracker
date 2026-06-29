@@ -6,63 +6,33 @@
    DESIGN SYSTEM — CSS Custom Properties
    ═══════════════════════════════════════════════════ */
 
-:root {
-  /* Light theme */
-  --surface: #ffffff;
-  --surface-secondary: #f8f9fb;
-  --surface-tertiary: #f0f2f5;
-  --surface-elevated: #ffffff;
-  --border: #e2e5ea;
-  --border-secondary: #eceef2;
-  --text-primary: #0f1419;
-  --text-secondary: #536471;
-  --text-tertiary: #8899a6;
-  --text-inverse: #ffffff;
-  --accent: #6366f1;
-  --accent-hover: #4f46e5;
-  --accent-muted: rgba(99, 102, 241, 0.1);
-  --status-saved: #8b8fa3;
-  --status-applied: #6366f1;
+:root, .dark {
+  --surface: #1a1f1e;
+  --surface-secondary: #0b0e0d;
+  --surface-tertiary: #2d3432;
+  --surface-elevated: #2d3432;
+  --border: #2d3432;
+  --border-secondary: #3e4644;
+  --text-primary: #f0f0f4;
+  --text-secondary: #9ca3af;
+  --text-tertiary: #6b7280;
+  --text-inverse: #0a0a0f;
+  --accent: #c5a059;
+  --accent-hover: #b38e46;
+  --accent-muted: rgba(197, 160, 89, 0.1);
+  --status-saved: #6b7280;
+  --status-applied: #c5a059;
   --status-interview: #f59e0b;
   --status-offer: #10b981;
   --status-rejected: #ef4444;
   --status-ghosted: #64748b;
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-large: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-  --gradient-bg: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 25%, #e0e7ff 50%, #dbeafe 100%);
-}
-
-.dark {
-  --surface: #0a0a0f;
-  --surface-secondary: #111118;
-  --surface-tertiary: #18181f;
-  --surface-elevated: #1a1a24;
-  --border: #23232f;
-  --border-secondary: #1c1c26;
-  --text-primary: #f0f0f4;
-  --text-secondary: #8b8fa3;
-  --text-tertiary: #5c5f73;
-  --text-inverse: #0a0a0f;
-  --accent: #818cf8;
-  --accent-hover: #6366f1;
-  --accent-muted: rgba(129, 140, 248, 0.1);
-  --status-saved: #6b7280;
-  --status-applied: #818cf8;
-  --status-interview: #fbbf24;
-  --status-offer: #34d399;
-  --status-rejected: #f87171;
-  --status-ghosted: #94a3b8;
-  --glass-bg: rgba(10, 10, 15, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-bg: rgba(26, 31, 30, 0.8);
+  --glass-border: rgba(197, 160, 89, 0.1);
   --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
   --shadow-large: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-  --gradient-primary: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c084fc 100%);
-  --gradient-bg: linear-gradient(135deg, #0f0a1e 0%, #0e0f1f 25%, #0a0f1f 50%, #0a101f 100%);
+  --gradient-primary: linear-gradient(135deg, #c5a059 0%, #d8b775 50%, #e8cc94 100%);
+  --gradient-bg: linear-gradient(135deg, #0b0e0d 0%, #1a1f1e 100%);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -79,10 +49,14 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   background-color: var(--surface);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.font-headline {
+  font-family: 'Libre Caslon Text', serif;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -149,14 +123,14 @@ body {
 
   .btn-primary {
     @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200;
-    background: var(--gradient-primary);
-    color: white;
-    box-shadow: 0 1px 2px rgba(99, 102, 241, 0.3);
+    background: var(--accent);
+    color: var(--surface-secondary);
+    box-shadow: 0 1px 2px rgba(197, 160, 89, 0.3);
   }
 
   .btn-primary:hover {
-    opacity: 0.9;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    background: var(--accent-hover);
+    box-shadow: 0 4px 12px rgba(197, 160, 89, 0.4);
     transform: translateY(-0.5px);
   }
 
@@ -166,14 +140,13 @@ body {
 
   .btn-secondary {
     @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200;
-    background: var(--surface-tertiary);
-    color: var(--text-primary);
-    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
   }
 
   .btn-secondary:hover {
-    background: var(--surface-elevated);
-    border-color: var(--text-tertiary);
+    background: var(--accent-muted);
   }
 
   .btn-danger {
