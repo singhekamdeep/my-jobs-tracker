@@ -21,11 +21,20 @@ export default function ProtectedRoute() {
           const newToken = data.data?.accessToken;
           if (newToken) {
             localStorage.setItem('accessToken', newToken);
+            if (data.data?.refreshToken) {
+              localStorage.setItem('refreshToken', data.data.refreshToken);
+            }
             setAuthState('authenticated');
           } else {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
             setAuthState('unauthenticated');
           }
         } catch {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
           setAuthState('unauthenticated');
         }
         return;

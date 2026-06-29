@@ -14,6 +14,7 @@ export default function Navigation() {
       // Ignore logout errors
     } finally {
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
       navigate('/login');
     }
